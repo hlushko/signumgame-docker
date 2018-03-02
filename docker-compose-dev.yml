@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+    sg-nginx:
+        environment:
+            - VIRTUAL_HOST=sg.lh
+    sg-php-fpm:
+        volumes:
+            - sg-unison-sync:/var/www:nocopy
+    sg-proxy:
+        image: jwilder/nginx-proxy
+        ports:
+          - "80:80"
+        volumes:
+          - /var/run/docker.sock:/tmp/docker.sock:ro
+
+volumes:
+    sg-unison-sync:
+        external: true

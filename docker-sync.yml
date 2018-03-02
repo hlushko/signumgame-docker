@@ -1,0 +1,11 @@
+options:
+    verbose: true
+
+version: '2'
+
+syncs:
+    sg-unison-sync:
+        src: './code'
+        sync_strategy: 'unison'
+        sync_userid: ${UID}
+        sync_excludes: ['Path .idea']

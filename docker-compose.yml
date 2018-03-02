@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+    sg-mysql:
+        build: ./mysql
+        container_name: sg-mysql
+        volumes:
+            - ./mysql/data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: sg-root7
+    sg-nginx:
+        build: ./nginx
+        container_name: sg-nginx
+        ports:
+            - 80
+        volumes_from:
+            - sg-php-fpm
+        depends_on:
+            - sg-php-fpm
+    sg-php-fpm:
+        build:
+            context: ./php-fpm
+            args:
+                USER_ID: ${UID}
+                GROUP_ID: ${GID}
+                ICU_ARCHIVE: ${ICU_ARCHIVE}
+        container_name: sg-php-fpm
+        environment:
+            - REPOSITORY=${REPOSITORY}
+        volumes:
+            - ${SSH_KEY_FILE}:/root/.ssh/id_rsa:ro
+            - ~/.gitconfig:/root/.gitconfig:ro
+            - ~/.composer:/root/.composer
+            - /var/www
+
+networks:
+    default:
+        external:
+            name: sg-network
